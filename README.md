@@ -88,7 +88,7 @@ Raspberry Pi 4 compatibility is uncertain, and performance may be limited for la
 
 ## Decision Making Matrix
 
-The following table summarizes the Decision Making Matrix (DMM) for the three evaluated blockchain platforms based on the criteria listed.
+The following table summarizes the Decision Making Matrix (DMM) which uses a scoring system of 1 to 5 for the three evaluated blockchain platforms based on the criteria listed.
 
 | Criteria                           | Hyperledger Fabric | R3 Corda | Quorum |
 |-----------------------------------|--------------------|-------------|----------|
@@ -163,3 +163,47 @@ Quorum: 3 (Limited adoption compared to the other two platforms)
 Based on the Decision Making Matrix, Hyperledger Fabric and R3 Corda score similarly in most criteria, with Hyperledger Fabric having a slight advantage in communication protocol support. Quorum lags behind due to its uncertain compatibility with Raspberry Pi 4 and lack of native gRPC support. Therefore, Hyperledger Fabric and R3 Corda are the top contenders for this project.
 
 Overall, Hyperledger Fabric has a rich ecosystem, modular architecture, and strong privacy features. R3 Corda is designed for financial and healthcare industries, has easily replaceable storage solutions, and supports Java and Kotlin. Both platforms have proven scalability and support Zero Knowledge Proofs.  I will be moving forward with the Hyperledger Fabric Blockchain for this project.
+
+# Privacy-Preserving Technique Evaluation for Secure API Access Management
+
+This project requires an evaluation and comparison of privacy-preserving techniques compatible with Hyperledger Fabric, such as Zero Knowledge Proofs (ZKPs), Secure Multi-Party Computation (MPC), and homomorphic encryption, to determine the most suitable techniques based on the requirements outlined above.
+
+## Decision Making Matrix
+
+I have created a Decision Making Matrix (DMM) to evaluate and compare the three privacy-preserving techniques. The DMM has a scoring system of 1 to 5 for the criteria of scalability, compliance, privacy, security, and efficiency. The breakdown and reasoning for each row are provided below the DMM.
+
+| Technique                          | Scalability | Compliance | Privacy | Security | Efficiency |
+|-----------------------------------|-------------|------------|---------|----------|------------|
+| Zero Knowledge Proofs (ZKPs)      | 3           | 5          | 5       | 5        | 3          |
+| Secure Multi-Party Computation    | 2           | 4          | 4       | 4        | 2          |
+| Homomorphic Encryption            | 1           | 4          | 5       | 5        | 1          |
+
+### Breakdown and Reasoning
+
+**Zero Knowledge Proofs (ZKPs)**
+
+- Scalability: 3 - ZKPs can be computationally expensive, which might affect scalability with large numbers of users.
+- Compliance: 5 - ZKPs enable anonymous access to information, meeting the compliance requirements for DoD and HIPAA.
+- Privacy: 5 - ZKPs provide strong privacy guarantees by enabling access without revealing underlying information.
+- Security: 5 - ZKPs ensure secure access control and cryptographic requirements.
+- Efficiency: 3 - ZKPs have computational overhead, which might affect overall system performance.
+
+**Secure Multi-Party Computation (MPC)**
+
+- Scalability: 2 - MPC suffers from latency and communication overhead when scaled to millions of users.
+- Compliance: 4 - MPC offers a high level of security and privacy, but it may not fully address the specific requirements for IoT devices and health records.
+- Privacy: 4 - MPC provides privacy by keeping inputs private during computation, but it might not be suitable for anonymous access control.
+- Security: 4 - MPC ensures secure computation but may not fully address access control and cryptographic requirements.
+- Efficiency: 2 - MPC incurs communication overhead, which might negatively affect overall system performance.
+
+**Homomorphic Encryption**
+
+- Scalability: 1 - Homomorphic encryption has significant computational overhead and may not be efficient for handling millions of users.
+- Compliance: 4 - Homomorphic encryption provides strong privacy guarantees for data storage and retrieval, but it may not fully address the specific requirements for IoT devices and health records.
+- Privacy: 5 - Homomorphic encryption offers high privacy levels by enabling computation on encrypted data without decryption.
+- Security: 5 - Homomorphic encryption ensures secure data storage and retrieval, meeting cryptographic requirements.
+- Efficiency: 1 - Homomorphic encryption has substantial computational overhead, which might significantly impact overall system performance.
+
+## Conclusion
+
+Based on the DMM, Zero Knowledge Proofs (ZKPs) is the best-fitting technique, as it has the highest overall score and best matches the given requirements. ZKPs meet the specific needs for managing API access for embedded IoT devices and health records, allowing anonymous access to information, and ensuring scalability and compliance with Department of Defense and HIPAA requirements. Although ZKPs might have limitations in terms of computational efficiency, they provide the necessary security, privacy, and compliance needed for this use case.
