@@ -207,3 +207,221 @@ I have created a Decision Making Matrix (DMM) to evaluate and compare the three 
 ## Conclusion
 
 Based on the DMM, Zero Knowledge Proofs (ZKPs) is the best-fitting technique, as it has the highest overall score and best matches the given requirements. ZKPs meet the specific needs for managing API access for embedded IoT devices and health records, allowing anonymous access to information, and ensuring scalability and compliance with Department of Defense and HIPAA requirements. Although ZKPs might have limitations in terms of computational efficiency, they provide the necessary security, privacy, and compliance needed for this use case.
+
+# gRPC API Schema for Secure Healthcare Communication
+
+This document outlines the technical breakdown for designing a gRPC API schema to allow secure communication and access control between clients and the server for healthcare data exchange. The schema uses mTLS RSA-2048 or greater cryptography for data in transit and client verification using a whitelist. The API follows the HL7 FHIR API standard for healthcare and uses gRPC instead of RESTful APIs.
+
+## Requirements
+
+The gRPC API schema should include:
+
+- API endpoints for creating, retrieving, updating, and deleting patient records and medical information.
+- Data structures for patient records, medical information, and access control.
+- Implementation of access control using client certificates and a whitelist.
+
+Additionally, the following requirements and clarifications are necessary:
+
+1. The server will be responsible for verifying the client certificate.
+2. Example data structures for the requested FHIR resources are provided in JSON format. However, the Protobuf schema should be used.
+3. Access control should be based on permissions.
+4. Use gRPC framework built-in error handling mechanisms.
+5. The response format for the API requests should be Protobuf.
+
+## Design
+
+### Data structures
+
+The following Protobuf message types are defined in the gRPC API schema for healthcare data exchange:
+
+```proto
+syntax = "proto3";
+
+package healthcare;
+
+option java_multiple_files = true;
+option java_package = "com.example.healthcare";
+option java_outer_classname = "HealthcareProto";
+
+message Identifier {
+  string use = 1;
+  string system = 2;
+  string value = 3;
+}
+
+message Code {
+  string system = 1;
+  string code = 2;
+  string display = 3;
+}
+
+message Coding {
+  Code code = 1;
+}
+
+message CodeableConcept {
+  repeated Coding coding = 1;
+}
+
+message Quantity {
+  double value = 1;
+  string unit = 2;
+  string system = 3;
+  string code = 4;
+}
+
+message Ratio {
+  Quantity numerator = 1;
+  Quantity denominator = 2;
+}
+
+message Period {
+  string start = 1;
+  string end = 2;
+}
+
+message Reference {
+  string reference = 1;
+}
+
+message HumanName {
+  string family = 1;
+  repeated string given = 2;
+}
+
+message Patient {
+  string id = 1;
+  repeated Identifier identifier = 2;
+  repeated HumanName name = 3;
+  string gender = 4;
+  string birthDate = 5;
+}
+
+message Practitioner {
+  string id = 1;
+  repeated Identifier identifier = 2;
+  repeated HumanName name = 3;
+  string gender = 4;
+  string birthDate = 5;
+  repeated Qualification qualification = 6;
+}
+
+message Qualification {
+  CodeableConcept code = 1;
+  Period period = 2;
+}
+
+message Encounter {
+  string id = 1;
+  string status = 2;
+  CodeableConcept class = 3;
+  Reference subject = 4;
+  Period period = 5;
+}
+
+message Observation {
+  string id = 1;
+  string status = 2;
+  CodeableConcept code = 3;
+  Reference subject = 4;
+  string effectiveDateTime = 5;
+  Quantity valueQuantity = 6;
+}
+
+message Condition {
+  string id = 1;
+  Reference subject = 2;
+  CodeableConcept code = 3;
+  string onsetDateTime = 4;
+  CodeableConcept clinicalStatus = 5;
+  CodeableConcept verificationStatus = 6;
+}
+
+message Medication {
+  string id = 1;
+  CodeableConcept code = 2;
+  string status = 3;
+  repeated Ingredient ingredient = 4;
+  CodeableConcept form = 5;
+}
+
+message Ingredient {
+  CodeableConcept itemCodeableConcept = 1;
+  Ratio strength = 2;
+}
+
+// Service definition
+service HealthcareService {
+  // Add RPC methods for each supported FHIR resource and operation (e.g., CreatePatient, GetPatient, etc.)
+}
+```
+
+### API Endpoints
+
+The API endpoints for creating, retrieving, updating, and deleting patient records and medical information are defined as follows:
+
+```proto
+service HealthcareService {
+  rpc CreatePatient(Patient) returns (Patient) {}
+  rpc GetPatientById(string) returns (Patient) {}
+  rpc UpdatePatient(Patient) returns (Patient) {}
+  rpc DeletePatient(string) returns (google.protobuf.Empty) {}
+  rpc CreateMedicalInformation(MedicalInformation) returns (MedicalInformation) {}
+  rpc GetMedicalInformationById(string) returns (MedicalInformation) {}
+  rpc UpdateMedicalInformation(MedicalInformation) returns (MedicalInformation) {}
+  rpc DeleteMedicalInformation(string) returns (google.protobuf.Empty) {}
+}
+```
+
+### Access Control
+
+Access control is based on permissions defined in the `Permission` message type. The `permissions` field is included in the `Patient` message type and is used to store the permissions for each practitioner in the system. The `has_permission` helper function is used to check if a practitioner has the required permission for a given operation. The server-side implementation verifies the client's permissions before allowing them to perform any operation on a specific resource type.
+
+```python
+def has_permission(practitioner, resource_type, operation):
+    for permission in practitioner.permissions:
+        if permission.resourceType == resource_type and permission.operation == operation:
+            return True
+    return False
+```
+
+In each RPC method, the `has_permission` helper function is used to check the client's permissions before processing the request:
+
+```python
+def CreatePatient(self, request, context):
+    practitioner = get_practitioner_from_context(context)
+    if not has_permission(practitioner, "Patient", "create"):
+        context.abort(grpc.StatusCode.PERMISSION_DENIED, "Permission denied")
+
+    # Proceed with creating the patient
+    # ...
+```
+Here is an example of an extended `Practitioner` message type to include permissions:
+
+```proto
+message Practitioner {
+  string id = 1;
+  repeated Identifier identifier = 2;
+  repeated HumanName name = 3;
+  string gender = 4;
+  string birthDate = 5;
+  repeated Qualification qualification = 6;
+  repeated Permission permissions = 7;
+}
+```
+
+### Error Handling
+
+The gRPC framework built-in error handling mechanisms are used to handle errors or unexpected requests.
+
+### Response Format
+
+The response format for the API requests is Protobuf.
+
+### Security
+
+The server is responsible for verifying the client certificate. The server is configured to use mTLS for secure communication and client verification. The appropriate SSL/TLS credentials, including the server's private key, certificate, and trusted CA certificates, are set up in the server code. The server also verifies that the client's certificate is signed by a trusted CA and matches an entry in the server's whitelist.
+
+## Conclusion
+
+The designed gRPC API schema for healthcare data exchange allows secure communication and access control between clients and the server. The schema uses mTLS RSA-2048 or greater cryptography for data in transit and client verification using a whitelist. The API follows the HL7 FHIR API standard for healthcare and uses gRPC instead of RESTful APIs. The schema includes API endpoints for creating, retrieving, updating, and deleting patient records and medical information. Data structures for patient records, medical information, and access control are defined. Access control is based on permissions, and the gRPC framework built-in error handling mechanisms are used to handle errors or unexpected requests. The response format for the API requests is Protobuf. The server is responsible for verifying the client certificate, and the appropriate SSL/TLS credentials are set up in the server code.
