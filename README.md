@@ -350,9 +350,42 @@ message Ingredient {
   Ratio strength = 2;
 }
 
-// Service definition
 service HealthcareService {
-  // Add RPC methods for each supported FHIR resource and operation (e.g., CreatePatient, GetPatient, etc.)
+  // Patient
+  rpc CreatePatient(CreatePatientRequest) returns (CreatePatientResponse);
+  rpc GetPatient(GetPatientRequest) returns (GetPatientResponse);
+  rpc UpdatePatient(UpdatePatientRequest) returns (UpdatePatientResponse);
+  rpc DeletePatient(DeletePatientRequest) returns (DeletePatientResponse);
+
+  // Practitioner
+  rpc CreatePractitioner(CreatePractitionerRequest) returns (CreatePractitionerResponse);
+  rpc GetPractitioner(GetPractitionerRequest) returns (GetPractitionerResponse);
+  rpc UpdatePractitioner(UpdatePractitionerRequest) returns (UpdatePractitionerResponse);
+  rpc DeletePractitioner(DeletePractitionerRequest) returns (DeletePractitionerResponse);
+
+  // Encounter
+  rpc CreateEncounter(CreateEncounterRequest) returns (CreateEncounterResponse);
+  rpc GetEncounter(GetEncounterRequest) returns (GetEncounterResponse);
+  rpc UpdateEncounter(UpdateEncounterRequest) returns (UpdateEncounterResponse);
+  rpc DeleteEncounter(DeleteEncounterRequest) returns (DeleteEncounterResponse);
+
+  // Observation
+  rpc CreateObservation(CreateObservationRequest) returns (CreateObservationResponse);
+  rpc GetObservation(GetObservationRequest) returns (GetObservationResponse);
+  rpc UpdateObservation(UpdateObservationRequest) returns (UpdateObservationResponse);
+  rpc DeleteObservation(DeleteObservationRequest) returns (DeleteObservationResponse);
+
+  // Condition
+  rpc CreateCondition(CreateConditionRequest) returns (CreateConditionResponse);
+  rpc GetCondition(GetConditionRequest) returns (GetConditionResponse);
+  rpc UpdateCondition(UpdateConditionRequest) returns (UpdateConditionResponse);
+  rpc DeleteCondition(DeleteConditionRequest) returns (DeleteConditionResponse);
+
+  // Medication
+  rpc CreateMedication(CreateMedicationRequest) returns (CreateMedicationResponse);
+  rpc GetMedication(GetMedicationRequest) returns (GetMedicationResponse);
+  rpc UpdateMedication(UpdateMedicationRequest) returns (UpdateMedicationResponse);
+  rpc DeleteMedication(DeleteMedicationRequest) returns (DeleteMedicationResponse);
 }
 ```
 
@@ -416,7 +449,201 @@ The gRPC framework built-in error handling mechanisms are used to handle errors 
 
 ### Response Format
 
-The response format for the API requests is Protobuf.
+The response format for the API requests is Protobuf.  For each FHIR resource, there are `create`, `get`, `update`, and `delete` methods - each method requires a corresponding request and response message type.
+
+```proto
+// Patient
+message CreatePatientRequest {
+  Patient patient = 1;
+}
+
+message CreatePatientResponse {
+  Patient patient = 1;
+}
+
+message GetPatientRequest {
+  string id = 1;
+}
+
+message GetPatientResponse {
+  Patient patient = 1;
+}
+
+message UpdatePatientRequest {
+  string id = 1;
+  Patient patient = 2;
+}
+
+message UpdatePatientResponse {
+  Patient patient = 1;
+}
+
+message DeletePatientRequest {
+  string id = 1;
+}
+
+message DeletePatientResponse {}
+
+// Practitioner
+message CreatePractitionerRequest {
+  Practitioner practitioner = 1;
+}
+
+message CreatePractitionerResponse {
+  Practitioner practitioner = 1;
+}
+
+message GetPractitionerRequest {
+  string id = 1;
+}
+
+message GetPractitionerResponse {
+  Practitioner practitioner = 1;
+}
+
+message UpdatePractitionerRequest {
+  string id = 1;
+  Practitioner practitioner = 2;
+}
+
+message UpdatePractitionerResponse {
+  Practitioner practitioner = 1;
+}
+
+message DeletePractitionerRequest {
+  string id = 1;
+}
+
+message DeletePractitionerResponse {}
+
+// Encounter
+message CreateEncounterRequest {
+  Encounter encounter = 1;
+}
+
+message CreateEncounterResponse {
+  Encounter encounter = 1;
+}
+
+message GetEncounterRequest {
+  string id = 1;
+}
+
+message GetEncounterResponse {
+  Encounter encounter = 1;
+}
+
+message UpdateEncounterRequest {
+  string id = 1;
+  Encounter encounter = 2;
+}
+
+message UpdateEncounterResponse {
+  Encounter encounter = 1;
+}
+
+message DeleteEncounterRequest {
+  string id = 1;
+}
+
+message DeleteEncounterResponse {}
+
+// Observation
+message CreateObservationRequest {
+  Observation observation = 1;
+}
+
+message CreateObservationResponse {
+  Observation observation = 1;
+}
+
+message GetObservationRequest {
+  string id = 1;
+}
+
+message GetObservationResponse {
+  Observation observation = 1;
+}
+
+message UpdateObservationRequest {
+  string id = 1;
+  Observation observation = 2;
+}
+
+message UpdateObservationResponse {
+  Observation observation = 1;
+}
+
+message DeleteObservationRequest {
+  string id = 1;
+}
+
+message DeleteObservationResponse {}
+
+// Condition
+message CreateConditionRequest {
+  Condition condition = 1;
+}
+
+message CreateConditionResponse {
+  Condition condition = 1;
+}
+
+message GetConditionRequest {
+  string id = 1;
+}
+
+message GetConditionResponse {
+  Condition condition = 1;
+}
+
+message UpdateConditionRequest {
+  string id = 1;
+  Condition condition = 2;
+}
+
+message UpdateConditionResponse {
+  Condition condition = 1;
+}
+
+message DeleteConditionRequest {
+  string id = 1;
+}
+
+message DeleteConditionResponse {}
+
+// Medication
+message CreateMedicationRequest {
+  Medication medication = 1;
+}
+
+message CreateMedicationResponse {
+  Medication medication = 1;
+}
+
+message GetMedicationRequest {
+  string id = 1;
+}
+
+message GetMedicationResponse {
+  Medication medication = 1;
+}
+
+message UpdateMedicationRequest {
+  string id = 1;
+  Medication medication = 2;
+}
+
+message UpdateMedicationResponse {
+  Medication medication = 1;
+}
+
+message DeleteMedicationRequest {
+  string id = 1;
+}
+
+message DeleteMedicationResponse {}
+```
 
 ### Security
 
