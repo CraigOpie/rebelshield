@@ -10,7 +10,7 @@ RebelShield is a cutting-edge, privacy-preserving API for blockchain-based authe
 
 ## Getting Started
 
-To get started with the RebelShield project, please follow the installation and usage instructions provided in the README files of each component.
+To get started with the RebelShield project, please follow the [installation and usage instructions](documentation/getting-started.md) provided in the documentation directory.
 
 ## Contributing
 

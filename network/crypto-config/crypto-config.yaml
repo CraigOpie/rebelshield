@@ -1,0 +1,54 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: rebelshield.app
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: HealthcareProviders
+    Domain: healthcareproviders.rebelshield.app
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Patients
+    Domain: patients.rebelshield.app
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Regulators
+    Domain: regulators.rebelshield.app
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: InsuranceCompanies
+    Domain: insurancecompanies.rebelshield.app
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Auditors
+    Domain: auditors.rebelshield.app
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: HL7FHIRAPIProviders
+    Domain: hl7fhirapiproviders.rebelshield.app
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1

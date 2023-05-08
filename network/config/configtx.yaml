@@ -1,0 +1,237 @@
+Organizations:
+  - &Orderer
+    Name: OrdererMSP
+    ID: OrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+    OrdererEndpoints:
+      - "127.0.0.1:7050"
+    AnchorPeers:
+      - Host: 127.0.0.1
+        Port: 7051
+
+  - &HealthcareProviders
+    Name: HealthcareProvidersMSP
+    ID: HealthcareProvidersMSP
+    MSPDir: crypto-config/peerOrganizations/healthcareproviders.rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('HealthcareProvidersMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('HealthcareProvidersMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('HealthcareProvidersMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('HealthcareProvidersMSP.member')"
+
+  - &Patients
+    Name: PatientsMSP
+    ID: PatientsMSP
+    MSPDir: crypto-config/peerOrganizations/patients.rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('PatientsMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('PatientsMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('PatientsMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('PatientsMSP.member')"
+
+  - &Regulators
+    Name: RegulatorsMSP
+    ID: RegulatorsMSP
+    MSPDir: crypto-config/peerOrganizations/regulators.rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('RegulatorsMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('RegulatorsMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('RegulatorsMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('RegulatorsMSP.member')"
+
+  - &InsuranceCompanies
+    Name: InsuranceCompaniesMSP
+    ID: InsuranceCompaniesMSP
+    MSPDir: crypto-config/peerOrganizations/insurancecompanies.rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('InsuranceCompaniesMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('InsuranceCompaniesMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('InsuranceCompaniesMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('InsuranceCompaniesMSP.member')"
+
+  - &Auditors
+    Name: AuditorsMSP
+    ID: AuditorsMSP
+    MSPDir: crypto-config/peerOrganizations/auditors.rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('AuditorsMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('AuditorsMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('AuditorsMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('AuditorsMSP.member')"
+
+  - &HL7FHIRAPIProviders
+    Name: HL7FHIRAPIProvidersMSP
+    ID: HL7FHIRAPIProvidersMSP
+    MSPDir: crypto-config/peerOrganizations/hl7fhirapiproviders.rebelshield.app/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('HL7FHIRAPIProvidersMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('HL7FHIRAPIProvidersMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('HL7FHIRAPIProvidersMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('HL7FHIRAPIProvidersMSP.member')"
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V3_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies: &ApplicationDefaultPolicies
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - orderer.rebelshield.app:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  MaxChannels: 0
+  EtcdRaft:
+    Consenters:
+      - Host: orderer.rebelshield.app
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/rebelshield.app/orderers/orderer.rebelshield.app/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/rebelshield.app/orderers/orderer.rebelshield.app/tls/server.crt
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+  Capabilities:
+    <<: *OrdererCapabilities
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  RSGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *Orderer
+    Consortiums:
+      RSConsortium:
+        Organizations:
+          - *HealthcareProviders
+          - *Patients
+          - *Regulators
+          - *InsuranceCompanies
+          - *Auditors
+          - *HL7FHIRAPIProviders
+
+  RSChannel:
+    <<: *ChannelDefaults
+    Consortium: RSConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - <<: *HealthcareProviders
+        - <<: *Patients
+        - <<: *Regulators
+        - <<: *InsuranceCompanies
+        - <<: *Auditors
+        - <<: *HL7FHIRAPIProviders
